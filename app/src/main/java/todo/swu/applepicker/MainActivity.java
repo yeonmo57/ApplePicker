@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public StringBuffer getResponse(){
         return response;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         System.out.println("hi");
@@ -83,62 +84,64 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                readBtn.setOnClickListener(new Button.OnClickListener() {
+        readBtn.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onClick(View view) {
-                        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                readData.setText(document.getId()+"=>"+document.getData());
+                            }
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+            }});
+
+        saveBtn.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textView.setText("Red");
+
+                // Create a new user with a first and last name
+                Map<String, Object> user = new HashMap<>();
+                user.put("first", "kim");
+                user.put("last", "hyerin");
+                user.put("born", 1999);
+
+                // Add a new document with a generated ID
+                db.collection("users")
+                        .add(user)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Log.d(TAG, document.getId() + " => " + document.getData());
-                                        readData.setText(document.getId()+"=>"+document.getData());
-                                    }
-                                } else {
-                                    Log.w(TAG, "Error getting documents.", task.getException());
-                                }
-                    }});
-
-                saveBtn.setOnClickListener(new Button.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        textView.setText("Red");
-
-                        // Create a new user with a first and last name
-                        Map<String, Object> user = new HashMap<>();
-                        user.put("first", "kim");
-                        user.put("last", "hyerin");
-                        user.put("born", 1999);
-
-                        // Add a new document with a generated ID
-                        db.collection("users")
-                                .add(user)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.w(TAG, "Error adding document", e);
-                                    }
-                                });
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
+                            }
+                        });
                     }
 
                 });
             }
         });
 
+        /*
         System.out.println("test");
         String apiURL = "https://nxie8hhe8q.apigw.ntruss.com/custom/v1/15052/d9ca1275cb57d960372ef532fa2ff936a1f9e789c8af3e55617a0bd60c605d31/general";
-        String secretKey = "UUNjZ1p4ZXRMRk1VZlpramFkY1lwSFBrck5DS3hFdWw=";
-        String imageFile = "ocr_test01.png";
-        //C:\Users\USER\AndroidStudioProjects\ApplePicker\app\src\main\java\todo\swu\applepicker\ocr_test01.png
+        String secretKey = "UUNjZ1p4ZXRMRk1VZlpramFkY1lwSFBrck5DS3hFdWw";
+        String imageFile = "http://sc1.swu.ac.kr/~moo/ocr_test/ocr_test01.png";
+
 
 
         try {
+            ocrData.setText("test1");
             URL url = new URL(apiURL);
             HttpURLConnection con = (HttpURLConnection)url.openConnection();
             con.setUseCaches(false);
@@ -149,25 +152,39 @@ public class MainActivity extends AppCompatActivity {
             String boundary = "----" + UUID.randomUUID().toString().replaceAll("-", "");
             con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
             con.setRequestProperty("X-OCR-SECRET", secretKey);
+            ocrData.setText("test2");
 
             JSONObject json = new JSONObject();
             json.put("version", "V2");
             json.put("requestId", UUID.randomUUID().toString());
             json.put("timestamp", System.currentTimeMillis());
+            ocrData.setText("test3-1");
             JSONObject image = new JSONObject();
-            image.put("format", "jpg");
+            ocrData.setText("test3-2");
+            image.put("format", "png");
             image.put("name", "demo");
+            ocrData.setText("test3-3");
             JSONArray images = new JSONArray();
+            ocrData.setText("test3-4");
             images.put(image);
+            ocrData.setText("test3-5");
             json.put("images", images);
+            ocrData.setText("test3-6");
             String postParams = json.toString();
+            ocrData.setText("test3-7");
 
             con.connect();
+            ocrData.setText("test4");
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            ocrData.setText("test5");
             long start = System.currentTimeMillis();
+            ocrData.setText("test6");
             File file = new File(imageFile);
+            ocrData.setText("test7");
             writeMultiPart(wr, postParams, file, boundary);
+            ocrData.setText("test8");
             wr.close();
+
 
             int responseCode = con.getResponseCode();
             BufferedReader br;
@@ -181,8 +198,9 @@ public class MainActivity extends AppCompatActivity {
             while ((inputLine = br.readLine()) != null) {
                 response.append(inputLine);
             }
+
             br.close();
-            System.out.println("test");
+            System.out.println("test5");
             System.out.println(response);
             //setResponse(response);
             ocrData.setText(response);
@@ -234,6 +252,64 @@ public class MainActivity extends AppCompatActivity {
         }
         out.flush();
 
+    */
+
+        String apiURL = "https://nxie8hhe8q.apigw.ntruss.com/custom/v1/15052/d9ca1275cb57d960372ef532fa2ff936a1f9e789c8af3e55617a0bd60c605d31/general";
+        String secretKey = "UUNjZ1p4ZXRMRk1VZlpramFkY1lwSFBrck5DS3hFdWw";
+
+        try {
+            URL url = new URL(apiURL);
+            HttpURLConnection con = (HttpURLConnection)url.openConnection();
+            con.setUseCaches(false);
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            con.setRequestProperty("X-OCR-SECRET", secretKey);
+
+            JSONObject json = new JSONObject();
+            json.put("version", "V2");
+            json.put("requestId", UUID.randomUUID().toString());
+            json.put("timestamp", System.currentTimeMillis());
+            JSONObject image = new JSONObject();
+            image.put("format", "png");
+            image.put("url", "http://sc1.swu.ac.kr/~moo/ocr_test/ocr_test01.png"); // image should be public, otherwise, should use data
+            // FileInputStream inputStream = new FileInputStream("YOUR_IMAGE_FILE");
+            // byte[] buffer = new byte[inputStream.available()];
+            // inputStream.read(buffer);
+            // inputStream.close();
+            // image.put("data", buffer);
+            image.put("name", "demo");
+            JSONArray images = new JSONArray();
+            images.put(image);
+            json.put("images", images);
+            String postParams = json.toString();
+            ocrData.setText("test1");
+
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(postParams);
+            wr.flush();
+            wr.close();
+            ocrData.setText("test2");
+            int responseCode = con.getResponseCode();
+            BufferedReader br;
+            if (responseCode == 200) {
+                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else {
+                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            }
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = br.readLine()) != null) {
+                response.append(inputLine);
+            }
+            br.close();
+            ocrData.setText("test3");
+            System.out.println(response);
+            ocrData.setText("4");
+        } catch (Exception e) {
+            System.out.println(e);
+        }
 
     }
 
