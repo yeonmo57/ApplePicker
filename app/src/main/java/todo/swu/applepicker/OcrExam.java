@@ -1,5 +1,8 @@
 package todo.swu.applepicker;
 
+import android.content.Intent;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -15,12 +18,15 @@ import java.net.URL;
 import java.util.UUID;
 
 public class OcrExam {
-        public static void main(String[] args) {
+
+        public void main(String[] args) {
             String apiURL = "https://nxie8hhe8q.apigw.ntruss.com/custom/v1/15052/d9ca1275cb57d960372ef532fa2ff936a1f9e789c8af3e55617a0bd60c605d31/general";
             String secretKey = "R3NXT3dscldUa3FnYUxxUmFJZWR5R0FwRExIbFJ4b2M=";
-            String imageFile = "ocr_image_test";
+            String imageFile = "storage/emulated/0/Pictures/ocr_test01.png";
 
-            try {
+            Log.e(this.getClass().getName(), "OcrExam 실행");
+
+           try {
                 URL url = new URL(apiURL);
                 HttpURLConnection con = (HttpURLConnection)url.openConnection();
                 con.setUseCaches(false);
