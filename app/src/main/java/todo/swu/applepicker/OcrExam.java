@@ -37,7 +37,7 @@ public class OcrExam {
                 json.put("requestId", UUID.randomUUID().toString());
                 json.put("timestamp", System.currentTimeMillis());
                 JSONObject image = new JSONObject();
-                image.put("format", "jpg");
+                image.put("format", "png");
                 image.put("name", "demo");
                 JSONArray images = new JSONArray();
                 images.put(image);
