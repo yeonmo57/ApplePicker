@@ -1,11 +1,14 @@
 package todo.swu.applepicker;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentDaily = new FragmentDaily();
         fragmentSNS = new FragmentSNS();
         fragmentOCR = new FragmentOCR();
+
         tv_title = (TextView)findViewById(R.id.tv_title);
 
 
