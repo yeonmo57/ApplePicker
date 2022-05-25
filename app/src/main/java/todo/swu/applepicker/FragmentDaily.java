@@ -1,7 +1,9 @@
 package todo.swu.applepicker;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -21,18 +24,27 @@ public class FragmentDaily extends Fragment {
     EditText edit_dDay;
     EditText edit_comment;
     EditText edit_total_time;
+    TextView tv_date;
+
+    //달력
+    DatePickerDialog datePickerDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View myView = inflater.inflate(R.layout.fragment_daily, container, false);
 
+        //이 버튼을 클릭하면 달력이 호출됨.
         iButton_calendar = (ImageButton)myView.findViewById(R.id.iButton_calendar);
+        //선택한 날짜가 이텍스트 뷰에 나타난다.
+        tv_date = (TextView)myView.findViewById(R.id.tv_date);
+
         edit_dDay = (EditText)myView.findViewById(R.id.edit_dDay);
         edit_comment = (EditText)myView.findViewById(R.id.edit_comment);
         edit_total_time = (EditText)myView.findViewById(R.id.edit_total_time);
 
         iButton_calendar.setOnClickListener(v->{
+            callDateDialog(myView);
 
         });
 
@@ -108,4 +120,19 @@ public class FragmentDaily extends Fragment {
         // Inflate the layout for this fragment
         return myView;
     }
+
+    public void callDateDialog(View view) {
+        DialogFragment dateFragment = new DatePickerFragment();
+        dateFragment.show(getActivity().getSupportFragmentManager(),"dateFragment");
+
+
+    }
+    /*
+    @NonNull
+    public abstract void onCreateDialog(@Nullable Bundle savedInstanceState);
+
+    public abstract void onDateSet(DatePicker view, int year, int month, int day);
+
+     */
+
 }
