@@ -2,10 +2,13 @@ package todo.swu.applepicker;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -21,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MODE_PRIVATE);
+        Log.e(this.getClass().getName(), "mainActivity 실행");
         fragmentDaily = new FragmentDaily();
         fragmentSNS = new FragmentSNS();
         fragmentOCR = new FragmentOCR();
