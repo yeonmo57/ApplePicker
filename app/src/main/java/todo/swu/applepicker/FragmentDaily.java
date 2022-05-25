@@ -47,7 +47,7 @@ public class FragmentDaily extends Fragment {
         edit_total_time = (EditText)myView.findViewById(R.id.edit_total_time);
 
         iButton_calendar.setOnClickListener(v->{
-
+            callDateDialog(myView);
         });
 
         edit_dDay.addTextChangedListener(new TextWatcher() {
