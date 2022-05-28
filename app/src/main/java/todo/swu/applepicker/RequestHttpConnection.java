@@ -1,7 +1,13 @@
 package todo.swu.applepicker;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,6 +17,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -19,11 +26,12 @@ import java.util.UUID;
 
 public class RequestHttpConnection {
 
-    public void SendImage() {
+    public String SendImage(String imagePath) {
 
         String apiURL = "https://w7hg0efd03.apigw.ntruss.com/custom/v1/15103/1c87c9d97d9b9a3ebf38c9f3839a0886f632f08f002e9193f5a2a4cf5547f792/general";
         String secretKey = "ZGJoZ1dVTWNLS0hCT25zUHpya2FobWJzWUJwV3B1aEI=";
-        String imageFile = null;
+        String imageFile = imagePath;
+        StringBuffer response = new StringBuffer();
 
         Log.e(this.getClass().getName(), "SendImage 실행 1");
         try {
@@ -59,7 +67,7 @@ public class RequestHttpConnection {
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             long start = System.currentTimeMillis();
 
-            imageFile =   Environment.getExternalStorageDirectory() + "/Download/planner.jpg";    //추가
+            //imageFile = Environment.getExternalStorageDirectory() + "/Download/planner.jpg";  //경로 직접 넣어봄
             File file = new File(imageFile);
             Log.e(imageFile, "이미지 파일 path");
 
@@ -75,17 +83,17 @@ public class RequestHttpConnection {
                 br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
             }
             String inputLine;
-            StringBuffer response = new StringBuffer();
+
             while ((inputLine = br.readLine()) != null) {
                 response.append(inputLine);
             }
             br.close();
-            Log.e(this.getClass().getName(), "SendImage 실행 5");
+            Log.e(this.getClass().getName(), "response 출력 시작");
             System.out.println(response);
         } catch (Exception e) {
             System.out.println(e);
         }
-        //return 1;
+        return response.toString();
     }
 
     private static void writeMultiPart(OutputStream out, String jsonMessage, File file, String boundary) throws
