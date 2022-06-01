@@ -1,12 +1,21 @@
 package todo.swu.applepicker;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +23,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+
+import java.io.File;
 
 
 public class FragmentOCR extends Fragment {
@@ -30,20 +42,13 @@ public class FragmentOCR extends Fragment {
         ocrImageView = (ImageView) myView.findViewById(R.id.ocrImageView);
 
         galleryBtn.setOnClickListener(new View.OnClickListener() {
-            public static final int sub = 1001; /*OcrExam 액티비티를 띄우기 위한 요청코드(상수)*/
-
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, 1);
-
-                Log.e(this.getClass().getName(), "Fragment 실행 1");
-
-                NetworkTask networkTask = new NetworkTask();
-                networkTask.execute();
-
+                //앨범에서 이미지 가져오기
+                //Intent intent = new Intent();
+                //intent.setType("image/*");
+                //intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityResult.launch("image/*");
             }
         });
 
@@ -51,30 +56,90 @@ public class FragmentOCR extends Fragment {
             Toast.makeText(getActivity(), "카메라 버튼 누름", Toast.LENGTH_SHORT).show();
         });
 
-        // Inflate the layout for this fragment
-        return myView;
+        return myView; // Inflate the layout for this fragment
     }
 
-    public class NetworkTask extends AsyncTask<Void, Void, String> {
+    ActivityResultLauncher<String> startActivityResult = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            new ActivityResultCallback<Uri>() {
+                @Override
+                public void onActivityResult(Uri result) {
+                    if (result != null) {
+                        ocrImageView.setImageURI(result);
 
-        private String url;
-        private ContentValues values;
+                        String imagePath = getPathFromUri(getActivity(), result);
+                        Log.e(imagePath, "URI에서 변환한 이미지의 절대경로");
+                        Log.e(result.toString(), "선택한 이미지 파일의 URI 출력");
+                        NetworkTask networkTask = new NetworkTask(imagePath);
+                        networkTask.execute();
+                        Intent intent = new Intent(getActivity().getApplicationContext(), OcrEditActivity.class);
+                        startActivity(intent);
+                    }
+                    if (result == null) {
+                        Log.d(this.getClass().getName(), "사진의 URI값이 null입니다.");
+                    }
+                }
+            }
+    );
+
+    public class NetworkTask extends AsyncTask<Void, Void, String> {
+        String imagePath;
+
+        NetworkTask(String path) {
+            imagePath = path;
+        }
 
         @Override
         protected String doInBackground(Void... params) {
-
-            String result; // 요청 결과를 저장할 변수.
             RequestHttpConnection requestHttpURLConnection = new RequestHttpConnection();
-            requestHttpURLConnection.SendImage();
-            return "null";
+            String response = requestHttpURLConnection.SendImage(imagePath);
+            return response;
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
+        //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어온다.
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+
         }
     }
+
+    //URI값을 절대 경로(Real path)로 바꿔주는 함수
+    public static String getPathFromUri(Activity ctx, Uri fileUri) {
+        String path = null;
+        final String column = "_data";
+        Cursor cursor = ctx.getContentResolver().query(fileUri, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            String document_id = cursor.getString(0);
+            if (document_id == null) {
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    if (column.equalsIgnoreCase(cursor.getColumnName(i))) {
+                        path = cursor.getString(i);
+                        break;
+                    }
+                }
+            } else {
+                document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+                cursor.close();
+
+                final String[] projection = {column};
+                try {
+                    cursor = ctx.getContentResolver().query(
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            projection, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        path = cursor.getString(cursor.getColumnIndexOrThrow(column));
+                    }
+                } finally {
+                    if (cursor != null) cursor.close();
+                }
+            }
+        }
+        return path;
+    }
+
 
 }
 

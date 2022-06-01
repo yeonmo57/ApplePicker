@@ -18,6 +18,7 @@
     <color name="gray">#E5E5E5</color>
     <color name="gray_edittext">#2BC4C4C4</color>
     <color name="gray_background">#FAFAFA</color>
+    <color name="gray_inline">#28000000</color>
 
 
 
