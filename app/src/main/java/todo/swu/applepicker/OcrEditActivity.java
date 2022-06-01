@@ -1,5 +1,6 @@
 package todo.swu.applepicker;
 
+<<<<<<< HEAD
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+=======
+import android.os.Bundle;
+import android.view.View;
+>>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -16,8 +21,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+<<<<<<< HEAD
 import java.io.File;
 
+=======
+>>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
 public class OcrEditActivity extends AppCompatActivity {
     MaterialButtonToggleGroup toggle_btn_group;
     ConstraintLayout bottom_sheet;
@@ -28,6 +36,7 @@ public class OcrEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ocr_edit);
 
+<<<<<<< HEAD
         Intent receive_intent = getIntent();
 
         String jsonResponse = receive_intent.getStringExtra("jsonResponse");
@@ -46,6 +55,8 @@ public class OcrEditActivity extends AppCompatActivity {
             myImage.setImageBitmap(myBitmap);
         }
 
+=======
+>>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
         toggle_btn_group = (MaterialButtonToggleGroup) findViewById(R.id.toggle_btn_group_ocr_select);
         toggle_btn_group.addOnButtonCheckedListener((toggle_btn_group, checkedId, isChecked) -> {
             if (isChecked) {
