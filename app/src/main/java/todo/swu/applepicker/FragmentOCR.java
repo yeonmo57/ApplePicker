@@ -45,12 +45,6 @@ public class FragmentOCR extends Fragment {
             @Override
             public void onClick(View view) {
                 //앨범에서 이미지 가져오기
-<<<<<<< HEAD
-=======
-                //Intent intent = new Intent();
-                //intent.setType("image/*");
-                //intent.setAction(Intent.ACTION_GET_CONTENT);
->>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
                 startActivityResult.launch("image/*");
             }
         });
@@ -75,12 +69,7 @@ public class FragmentOCR extends Fragment {
                         Log.e(result.toString(), "선택한 이미지 파일의 URI 출력");
                         NetworkTask networkTask = new NetworkTask(imagePath);
                         networkTask.execute();
-<<<<<<< HEAD
 
-=======
-                        Intent intent = new Intent(getActivity().getApplicationContext(), OcrEditActivity.class);
-                        startActivity(intent);
->>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
                     }
                     if (result == null) {
                         Log.d(this.getClass().getName(), "사진의 URI값이 null입니다.");
@@ -107,7 +96,6 @@ public class FragmentOCR extends Fragment {
         //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어온다.
         protected void onPostExecute(String response) {
             super.onPostExecute(response);
-<<<<<<< HEAD
             Intent intent = new Intent(getActivity().getApplicationContext(), OcrEditActivity.class);
 
             // OcrEditActivity로 json 응답 데이터 전달하기
@@ -115,9 +103,6 @@ public class FragmentOCR extends Fragment {
             intent.putExtra("imagePath", imagePath);
 
             startActivity(intent);
-=======
-
->>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
         }
     }
 

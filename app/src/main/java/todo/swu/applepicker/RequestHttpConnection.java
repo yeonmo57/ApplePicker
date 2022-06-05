@@ -52,11 +52,7 @@ public class RequestHttpConnection {
             json.put("requestId", UUID.randomUUID().toString());
             json.put("timestamp", System.currentTimeMillis());
             JSONObject image = new JSONObject();
-<<<<<<< HEAD
             image.put("format", "png"); //원래 png였음 수정함.
-=======
-            image.put("format", "jpg"); //원래 png였음 수정함.
->>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
             image.put("name", "demo");
             JSONArray images = new JSONArray();
             images.put(image);

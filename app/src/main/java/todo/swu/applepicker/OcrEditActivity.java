@@ -1,17 +1,13 @@
 package todo.swu.applepicker;
 
-<<<<<<< HEAD
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Movie;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-=======
-import android.os.Bundle;
-import android.view.View;
->>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButtonToggleGroup;
@@ -21,11 +17,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-<<<<<<< HEAD
-import java.io.File;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-=======
->>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class OcrEditActivity extends AppCompatActivity {
     MaterialButtonToggleGroup toggle_btn_group;
     ConstraintLayout bottom_sheet;
@@ -36,15 +36,16 @@ public class OcrEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ocr_edit);
 
-<<<<<<< HEAD
         Intent receive_intent = getIntent();
 
         String jsonResponse = receive_intent.getStringExtra("jsonResponse");
         String imagePath = receive_intent.getStringExtra("imagePath");
+        List<String> inferTextList = new ArrayList<String>();
+        // OCR 글자들 모음 List
+        inferTextList = jsonParsing(jsonResponse);
 
-        Log.e(jsonResponse.toString(), "json response");
         Log.e(imagePath.toString(), "imagePath");
-
+        Log.e(inferTextList.toString(), "inferTextList");
 
         // 이미지뷰에 이미지 띄우기
         File imgFile = new  File(imagePath);
@@ -55,8 +56,6 @@ public class OcrEditActivity extends AppCompatActivity {
             myImage.setImageBitmap(myBitmap);
         }
 
-=======
->>>>>>> c1151ae39cf678a7f7d0302e2d53244be0600340
         toggle_btn_group = (MaterialButtonToggleGroup) findViewById(R.id.toggle_btn_group_ocr_select);
         toggle_btn_group.addOnButtonCheckedListener((toggle_btn_group, checkedId, isChecked) -> {
             if (isChecked) {
@@ -88,5 +87,42 @@ public class OcrEditActivity extends AppCompatActivity {
                 // slideOffset 접힘 -> 펼쳐짐: 0.0 ~ 1.0
             }
         });
+
+    }
+    public String removeChar(String str, Integer n) {
+        String front = str.substring(0, n);
+        String back = str.substring(n+1, str.length());
+        return front + back;
+    }
+
+    private List jsonParsing(String json)
+    {
+        List<String> inferTextList = new ArrayList<String>();
+        Log.e("Test", "1");
+        try{
+            JSONObject imagesJsonObject = new JSONObject(json);
+            JSONArray imagesArray = imagesJsonObject.getJSONArray("images");
+
+            String imagesJson = imagesArray.toString();
+            imagesJson = removeChar(imagesJson, 0);
+            int len = imagesJson.length()-1;
+            imagesJson = removeChar(imagesJson, len);
+            Log.e(imagesArray.toString(), "imagesArray");
+
+            JSONObject fieldsJsonObject = new JSONObject(imagesJson);
+            JSONArray fieldsArray = fieldsJsonObject.getJSONArray("fields");
+
+            for(int i=0; i<fieldsArray.length(); i++)
+            {
+                JSONObject fieldsObject = fieldsArray.getJSONObject(i);
+                String inferText = fieldsObject.getString("inferText");
+
+                if(inferText.length()>=2)
+                    inferTextList.add(fieldsObject.getString("inferText"));
+            }
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return inferTextList;
     }
 }
