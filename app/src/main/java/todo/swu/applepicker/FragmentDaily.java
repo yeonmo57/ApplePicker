@@ -1,5 +1,9 @@
 package todo.swu.applepicker;
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipDescription;
+import android.graphics.Canvas;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -14,8 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class FragmentDaily extends Fragment {
@@ -139,5 +148,6 @@ public class FragmentDaily extends Fragment {
     public void processDatePickerResult(String year, String month, String day, String day_of_week) {
         tv_date.setText(month + "/" + day + "(" + day_of_week + ")");
     }
+
 
 }
