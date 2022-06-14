@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     @NonNull
@@ -35,12 +36,15 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
             String year_string = Integer.toString(year);
             String month_string = Integer.toString(month + 1);
             String day_string = Integer.toString(day);
-            String date_string = (year_string + "/" + month_string + "/" + day_string);
+            String date_string = (year_string + "-" + month_string + "-" + day_string);
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date nDate = dateFormat.parse(date_string);
+            String datePicked = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(nDate);
             Calendar cal = Calendar.getInstance();
             cal.setTime(nDate);
+
+            //요일 구함
             int dayNum = cal.get(Calendar.DAY_OF_WEEK);
             String day_of_week = "";
             switch (dayNum) {
@@ -67,7 +71,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
                     break;
             }
 
-            fragment.processDatePickerResult(year_string, month_string, day_string, day_of_week);
+            fragment.processDatePickerResult(year_string, month_string, day_string, day_of_week, datePicked);
         } catch (ParseException e) {
             e.printStackTrace();
         }
